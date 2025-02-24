@@ -1,0 +1,30 @@
+<!-- register-players.component.html -->
+<div class="register-container">
+  <h1>Register Players</h1>
+  <p>Enter the names of the players (minimum {{ minPlayers }}, maximum {{ maxPlayers }}):</p>
+<!-- Game Mode Selection -->
+<div class="game-mode">
+  <label for="gameMode">Game Mode:</label>
+  <select id="gameMode" [(ngModel)]="selectedMode">
+    <option *ngFor="let mode of gameModes" [value]="mode.value">{{ mode.label }}</option>
+  </select>
+</div>
+  <div *ngFor="let player of players; let i = index; trackBy: trackByFn" class="player-input">
+    <label for="player{{ i }}">Player {{ i + 1 }}:</label>
+    <input class="form-control"
+      type="text" minlength="3" maxlength="20"
+      id="player{{ i }}"
+      [(ngModel)]="players[i]"
+      placeholder="Enter player name"
+    />
+    <button *ngIf="players.length > minPlayers" (click)="removePlayer(i)">Remove</button>
+  </div>
+
+  <button *ngIf="players.length < maxPlayers" (click)="addPlayer()">Add Player</button>
+
+
+
+  <div class="actions">
+    <button (click)="startGame()">Start Game</button>
+  </div>
+</div>

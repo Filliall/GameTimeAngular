@@ -1,0 +1,58 @@
+<div class="game-results-container">
+  <h1>Game Results</h1>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    Loading game sessions...
+  </div>
+
+  <!-- Game Sessions List -->
+  <div *ngIf="!isLoading">
+    <h2>Game Sessions</h2>
+    <ul class="session-list">
+      <li *ngFor="let session of gameSessions" (click)="loadSessionResults(session.id)">
+        <div class="session-item">
+          <p>Session ID: {{ session.id }}</p>
+          <p>Start Time: {{ session.startTime | date:'medium' }}</p>
+          <p>End Time: {{ session.endTime ? (session.endTime | date:'medium') : 'In Progress' }}</p>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Selected Session Details -->
+    <div *ngIf="selectedSession" class="session-details">
+      <h2>Session {{ selectedSession.id }} Details</h2>
+
+      <!-- Player Results -->
+      <div *ngFor="let playerResults of getPlayerResults(selectedSession.results) | keyvalue" class="player-results">
+        <h3>{{ playerResults.key }}</h3>
+        <p>Total Score: {{ getTotalScore(playerResults.value) }}ms</p>
+        <p>Total Clicks: {{ getTotalClicks(playerResults.value) }}</p>
+        <p>Average Time: {{ getAverageTime(playerResults.value) | number:'1.0-0' }}ms</p>
+
+        <!-- Turn-by-Turn Details -->
+        <h4>Turn Details</h4>
+        <table class="turn-details">
+          <thead>
+            <tr>
+              <th>Turn</th>
+              <th>Score</th>
+              <th>Clicks</th>
+              <th>Average Time</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let result of playerResults.value">
+              <td>{{ result.turn }}</td>
+              <td>{{ result.score }}ms</td>
+              <td>{{ result.clicks }}</td>
+              <td>{{ result.averageTime | number:'1.0-0' }}ms</td>
+              <td>{{ result.gameDate | date:'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

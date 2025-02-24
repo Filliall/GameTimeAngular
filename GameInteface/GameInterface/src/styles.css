@@ -1,0 +1,19 @@
+/* Add to navigation.component.css */
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 0;
+  }
+
+  .nav-links {
+    width: 100%;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .nav-links a {
+    justify-content: center;
+    padding: 10px;
+  }
+}
