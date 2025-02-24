@@ -1,9 +1,9 @@
 // game.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { GameResult } from '../../models/game-result';
+import { GameResult } from '../models/game-result';
 
 
 
@@ -11,7 +11,7 @@ import { GameResult } from '../../models/game-result';
   providedIn: 'root'
 })
 export class GameService {
-  private apiUrl = environment.apiUrl + '/api/game';
+  private apiUrl = environment.apiUrl + '/api/gamesession';
   private currentSessionId: number | null = null;
 
   constructor(private http: HttpClient) {}
@@ -28,7 +28,7 @@ export class GameService {
 
   // Get all game sessions
   getAllGameSessions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/all-sessions`);
+    return this.http.get<any[]>(`${this.apiUrl}/active-sessions`);
   }
 
   // Get results for a specific session

@@ -62,6 +62,7 @@
               "buildTarget": "GameInterface:build:production"
             },
             "development": {
+              "proxyConfig": "src/proxy.conf.json",
               "buildTarget": "GameInterface:build:development"
             }
           },

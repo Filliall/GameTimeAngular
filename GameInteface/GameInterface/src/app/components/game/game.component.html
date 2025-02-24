@@ -1,14 +1,9 @@
 <div *ngIf="gameStarted">
   <h1>Button Click Game</h1>
+  <h2>Turn {{ currentPlayerIndex + 1 }}</h2>
+  <h3>{{ players[currentPlayerIndex] }}'s Turn</h3>
+  <p>Cumulative Time: {{ cumulativeTimes[players[currentPlayerIndex]] }}ms</p>
 
-  <!-- Game Information -->
-  <div class="game-info">
-    <h2>Turn {{ currentPlayerIndex + 1 }}</h2>
-    <h3>{{ players[currentPlayerIndex] }}'s Turn</h3>
-    <p>Cumulative Time: {{ cumulativeTimes[players[currentPlayerIndex]] }}ms</p>
-  </div>
-
-  <!-- Eliminated Players -->
   <div *ngIf="eliminatedPlayers.length > 0" class="eliminated-players">
     <h4>Eliminated Players:</h4>
     <ul>
@@ -16,7 +11,6 @@
     </ul>
   </div>
 
-  <!-- Game UI -->
   <div class="play-area">
     <button
       *ngIf="buttonVisible && !eliminatedPlayers.includes(players[currentPlayerIndex])"
@@ -28,14 +22,8 @@
     </button>
   </div>
 
-  <!-- Game Over State -->
   <div *ngIf="gameOver" class="game-over">
     <h2>Game Over!</h2>
     <p>All players have been eliminated.</p>
   </div>
-</div>
-
-<!-- Start Game Button -->
-<div *ngIf="!gameStarted" class="start-game">
-  <button (click)="startGame()">Start Game</button>
 </div>
