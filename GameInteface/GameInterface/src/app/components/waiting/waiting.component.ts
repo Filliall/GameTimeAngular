@@ -24,7 +24,7 @@ export class WaitingComponent implements OnInit {
     if (this.sessionId) {
       this.gameSessionService.getSession(this.sessionId).subscribe({
         next: (session: any) => {
-          if (session.Players.length >= 2) {
+          if (session.players.length >= 2) {
             // Redirect to the game page
             this.router.navigate(['/game'], { queryParams: { sessionId: this.sessionId } });
           } else {

@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class GameSessionService {
+
   private apiUrl = environment.apiUrl + '/api/gamesession';
 
   constructor(private http: HttpClient) {}
@@ -15,6 +16,9 @@ export class GameSessionService {
     return this.http.post(`${this.apiUrl}/create`, players);
   }
 
+  advanceTurn(sessionId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/advance-turn/${sessionId}`, {});
+  }
 
   addResult(result: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/add-result`, result);

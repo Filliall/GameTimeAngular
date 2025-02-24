@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { GameSessionService } from '../../services/game-session.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { GameSessionService } from '../../services/game-session.service';
+import { GameHubService } from '../../services/gamehub.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-game',
@@ -10,127 +12,91 @@ import { CommonModule } from '@angular/common';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
-  sessionId: number | null = null;
-  players: string[] = [];
-  currentPlayerIndex = 0;
-  cumulativeTimes: { [playerName: string]: number } = {};
+export class GameComponent implements OnInit, OnDestroy {
+  sessionId!: string;
+  currentSession!: any;
+  currentUser: string;
+  playerTimes: { [key: string]: number } = {};
   eliminatedPlayers: string[] = [];
-  gameOver = false;
-  gameStarted = false;
-  buttonVisible = false;
-  buttonPosition = { top: '0px', left: '0px' };
-  startTime!: number;
+  currentPlayerTurn: string | undefined;
+  isMyTurn = false;
+  myTime = 0;
+  startTime: number | undefined;
+
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private gameSessionService: GameSessionService
-  ) {}
+    private gameService: GameSessionService,
+    private gameHub: GameHubService,
+    private authService: AuthService
+  ) {
+    this.currentUser = localStorage.getItem('currentUser') || '';
+   }
 
-  ngOnInit(): void {
-    this.sessionId = +this.route.snapshot.queryParams['sessionId'];
-    if (this.sessionId) {
-      this.gameSessionService.getSession(this.sessionId).subscribe({
-        next: (session: any) => {
-          this.players = session.players;
-          this.initializeCumulativeTimes();
-          this.startGame();
-        },
-        error: (err) => {
-          alert('Failed to load session: ' + err.error);
-        }
-      });
-    }
-  }
+  async ngOnInit() {
+    var sessionId = this.route.snapshot.queryParams['sessionId'];
 
-  initializeCumulativeTimes() {
-    this.players.forEach(player => {
-      this.cumulativeTimes[player] = 0;
+    this.startTime = Date.now();
+
+
+
+    await this.gameHub.startConnection();
+    await this.gameHub.joinSessionGroup(sessionId, this.currentUser);
+
+    // Initial turn check
+    this.gameService.getSession(sessionId).subscribe(session => {
+      this.currentSession = session;
+      this.currentPlayerTurn = session.players[session.currentPlayerIndex];
+        this.isMyTurn = this.currentUser === this.currentPlayerTurn;
     });
-  }
 
-  startGame() {
-    this.gameStarted = true;
-    this.gameOver = false;
-    this.showButton();
+    this.gameHub.onTurnUpdate(data => {
+      this.currentPlayerTurn = data.currentPlayer;
+      this.isMyTurn = this.currentUser === this.currentPlayerTurn;
+      this.playerTimes = data.playerTimes;
+      this.eliminatedPlayers = data.eliminatedPlayers;
+      this.isMyTurn = this.currentPlayerTurn === this.currentUser &&
+                     !this.eliminatedPlayers.includes(this.currentUser);
+      this.myTime = this.playerTimes[this.currentUser] || 0;
+    });
+
+
+   this.gameHub.onPlayerEliminated(player => {
+      console.log(`${player} has been eliminated!`);
+    });
+
+
+
   }
 
   handleButtonClick() {
-    if (this.gameOver) return;
+    if (!this.isMyTurn) return;
 
-    const reactionTime = Date.now() - this.startTime;
-    const currentPlayer = this.players[this.currentPlayerIndex];
-
-    this.cumulativeTimes[currentPlayer] += reactionTime;
-
-    if (this.cumulativeTimes[currentPlayer] > 30000) {
-      this.eliminatePlayer(currentPlayer);
-    }
-
-    this.saveResult(currentPlayer, reactionTime);
-    this.passTurn();
-  }
-
-  eliminatePlayer(playerName: string) {
-    if (!this.eliminatedPlayers.includes(playerName)) {
-      this.eliminatedPlayers.push(playerName);
-      alert(`${playerName} has been eliminated for exceeding 30 seconds!`);
-    }
-
-    if (this.eliminatedPlayers.length === this.players.length) {
-      this.endGame();
+    // Calculate reaction time
+    if (this.startTime === undefined) {
+      console.error('Start time is undefined');
       return;
     }
+    const reactionTime = Date.now() - this.startTime;
+
+
+    // Disable button immediately
+    this.isMyTurn = false;
+
+    this.gameHub.onUpdateTurn(this.currentSession.id, this.currentUser);
+
   }
 
-  passTurn() {
-    do {
-      this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-    } while (this.eliminatedPlayers.includes(this.players[this.currentPlayerIndex]));
 
-    this.showButton();
-  }
-
-  showButton() {
-    if (this.gameOver) return;
-
-    const maxTop = 450;
-    const maxLeft = 450;
-    const newTop = Math.floor(Math.random() * maxTop);
-    const newLeft = Math.floor(Math.random() * maxLeft);
-
-    this.buttonPosition = {
-      top: `${newTop}px`,
-      left: `${newLeft}px`
+  getTimeClass(player: string) {
+    return {
+      'eliminated': this.eliminatedPlayers.includes(player),
+      'current-turn': this.currentUser === player
     };
-
-    this.startTime = Date.now();
-    this.buttonVisible = true;
   }
 
-  saveResult(playerName: string, reactionTime: number) {
-    if (!this.sessionId) return;
 
-    const result = {
-      playerName,
-      score: reactionTime,
-      clicks: 1,
-      averageTime: reactionTime,
-      turn: this.currentPlayerIndex + 1,
-      gameSessionId: this.sessionId
-    };
-
-    this.gameSessionService.addResult(result).subscribe({
-      next: () => console.log('Turn result saved successfully'),
-      error: (err) => console.error('Error saving turn result:', err)
-    });
-  }
-
-  endGame() {
-    this.gameOver = true;
-    this.buttonVisible = false;
-    alert('Game over! All players have been eliminated.');
-    this.router.navigate(['/results']);
+  ngOnDestroy() {
+    this.gameHub.stopConnection();
   }
 }

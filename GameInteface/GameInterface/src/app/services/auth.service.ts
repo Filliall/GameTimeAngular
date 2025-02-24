@@ -31,6 +31,7 @@ export class AuthService {
     return this.http.post(this.apiUrl +'login', { username, password }).subscribe({
       next: (response: any) => {
         localStorage.setItem('token', response.token);
+        localStorage.setItem('currentUser', username);
         this.isAuthenticated.next(true);
 
         // Add the player to a game session
@@ -38,6 +39,7 @@ export class AuthService {
           next: (session: any) => {
             if (session.players.length >= 2) {
               // Start the game if there are enough players
+              localStorage.setItem('session', session.id);
               this.gameSessionService.startGame(session.id).subscribe({
                 next: () => {
                   this.router.navigate(['/game'], { queryParams: { sessionId: session.id } });
