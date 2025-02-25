@@ -1,41 +1,24 @@
-<div *ngIf="gameStarted">
-  <h1>Button Click Game</h1>
-
-  <!-- Game Information -->
-  <div class="game-info">
-    <h2>Turn {{ currentPlayerIndex + 1 }}</h2>
-    <h3>{{ players[currentPlayerIndex] }}'s Turn</h3>
-    <p>Cumulative Time: {{ cumulativeTimes[players[currentPlayerIndex]] }}ms</p>
+<!-- game.component.html -->
+<div class="game-container">
+  <div class="header">
+    <h2>Current Turn: {{ currentPlayerTurn }}</h2>
+    <div class="my-time">Your Total Time: {{ myTime | number:'1.1-1' }}s</div>
   </div>
 
-  <!-- Eliminated Players -->
-  <div *ngIf="eliminatedPlayers.length > 0" class="eliminated-players">
-    <h4>Eliminated Players:</h4>
-    <ul>
-      <li *ngFor="let player of eliminatedPlayers">{{ player }}</li>
-    </ul>
-  </div>
+  <button
+  [disabled]="!isMyTurn || eliminatedPlayers.includes(currentUser)"
+  (click)="handleButtonClick()"
+>
+  {{ isMyTurn ? 'CLICK NOW!' : 'WAITING FOR TURN' }}
+</button>
 
-  <!-- Game UI -->
-  <div class="play-area">
-    <button
-      *ngIf="buttonVisible && !eliminatedPlayers.includes(players[currentPlayerIndex])"
-      class="target-button"
-      [ngStyle]="buttonPosition"
-      (click)="handleButtonClick()"
-    >
-      Click Me!
-    </button>
-  </div>
-
-  <!-- Game Over State -->
-  <div *ngIf="gameOver" class="game-over">
-    <h2>Game Over!</h2>
-    <p>All players have been eliminated.</p>
+<div class="player-list">
+  <div *ngFor="let player of currentSession.players"
+       [class]="getTimeClass(player)">
+    {{ player }}: {{ playerTimes[player] | number:'1.1-1' }}s
+    <span *ngIf="eliminatedPlayers.includes(player)" class="eliminated-tag">
+      (ELIMINATED)
+    </span>
   </div>
 </div>
-
-<!-- Start Game Button -->
-<div *ngIf="!gameStarted" class="start-game">
-  <button (click)="startGame()">Start Game</button>
 </div>

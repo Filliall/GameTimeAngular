@@ -1,5 +1,4 @@
-/* game-results.component.css */
-.game-results-container {
+.results-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -12,29 +11,7 @@
   color: #4CAF50;
 }
 
-.session-list {
-  list-style: none;
-  padding: 0;
-}
-
-.session-item {
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.session-item:hover {
-  background-color: #f0f0f0;
-}
-
-.session-details {
-  margin-top: 20px;
-}
-
-.player-results {
+.session-card {
   background: #fff;
   border-radius: 8px;
   padding: 20px;
@@ -42,9 +19,8 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.player-results h3 {
-  color: #4CAF50;
-  margin-bottom: 10px;
+.player-results {
+  margin-top: 20px;
 }
 
 .turn-details {

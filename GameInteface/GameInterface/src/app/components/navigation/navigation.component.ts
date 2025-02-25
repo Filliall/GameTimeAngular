@@ -13,7 +13,8 @@ import { CommonModule } from '@angular/common';
 export class NavigationComponent {
   navItems = [
     { path: '/', label: 'Home', icon: 'home' },
-    { path: '/register-players', label: 'Register Players', icon: 'person_add' },
+    { path: '/register', label: 'Register', icon: 'person_add' },
+    { path: '/login', label: 'Login', icon: 'login' },
     { path: '/game', label: 'Play Game', icon: 'sports_esports' },
     { path: '/results', label: 'Results', icon: 'leaderboard' }
   ];

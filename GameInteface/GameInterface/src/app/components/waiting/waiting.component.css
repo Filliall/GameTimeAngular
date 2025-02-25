@@ -1,0 +1,13 @@
+.waiting-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.waiting-container h1 {
+  color: #4CAF50;
+}
+
+.waiting-container p {
+  font-size: 1.2em;
+  color: #333;
+}

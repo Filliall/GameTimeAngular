@@ -1,129 +1,63 @@
-/* game.component.css */
 .game-container {
-  text-align: center;
+  max-width: 600px;
+  margin: 2rem auto;
   padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-.game-area {
-  margin-top: 20px;
-}
-
-.play-area {
-  position: relative;
-  width: 500px;
-  height: 500px;
-  border: 2px solid #333;
-  margin: 20px auto;
-  background-color: #f0f0f0;
-}
-
-.target-button {
-  position: absolute;
-  padding: auto;
-
-  height: 50px;
-  border-radius: 50%;
-  background-color: #ff4444;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 11px;
-  transition: transform 0.1s;
-}
-
-.target-button:hover {
-  transform: scale(1.1);
-  background-color: #ff0000;
-}
-
-.info-panel {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+.header {
   margin-bottom: 20px;
-}
-
-.game-over {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #eee;
-  border-radius: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2rem;
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-button:hover {
-  background-color: #45a049;
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
-.eliminated-players {
-  margin: 20px 0;
-  padding: 10px;
-  background-color: #ffe6e6;
-  border-radius: 8px;
-  border: 1px solid #ff4d4d;
-}
-
-.eliminated-players h4 {
-  color: #ff4d4d;
-  margin-bottom: 10px;
-}
-
-.eliminated-players ul {
-  list-style: none;
-  padding: 0;
-}
-
-.eliminated-players li {
-  color: #ff4d4d;
-  font-weight: bold;
-}
-
-.eliminated-players {
-  margin: 20px 0;
-  padding: 10px;
-  background-color: #ffe6e6;
-  border-radius: 8px;
-  border: 1px solid #ff4d4d;
-}
-
-.eliminated-players h4 {
-  color: #ff4d4d;
-  margin-bottom: 10px;
-}
-
-.eliminated-players ul {
-  list-style: none;
-  padding: 0;
-}
-
-.eliminated-players li {
-  color: #ff4d4d;
-  font-weight: bold;
-}
-
-.game-over {
-  text-align: center;
+.player-list {
   margin-top: 20px;
-  padding: 20px;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  border: 1px solid #ddd;
 }
 
-.game-over h2 {
-  color: #4CAF50;
+.player-list div {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  background-color: #f5f5f5;
 }
 
-.game-over p {
-  font-size: 1.2em;
-  color: #333;
+.current-turn {
+  border-left: 4px solid #4CAF50;
+  background-color: #e8f5e9 !important;
+}
+
+.eliminated {
+  background-color: #ffebee !important;
+  color: #ff4444;
+}
+
+.eliminated-tag {
+  color: #ff4444;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.my-time {
+  color: #2196F3;
+  font-weight: bold;
+  margin-top: 10px;
 }
